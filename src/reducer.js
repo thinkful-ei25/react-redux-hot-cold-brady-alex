@@ -2,7 +2,6 @@ import {ADD_GUESS, SET_FEEDBACK, RESTART_GAME, SET_AURAL} from './actions';
 
 const initialState = {
   guesses: [],
-  count: 0,
   feedback: 'Make your guess!',
   auralStatus: '',
   correctAnswer: Math.floor(Math.random() * 100) + 1
