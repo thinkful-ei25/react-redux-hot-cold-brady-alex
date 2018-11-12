@@ -1,4 +1,4 @@
-import { ADD_GUESS, SET_FEEDBACK, RESTART_GAME, SET_AURAL } from './actions';
+import { ADD_GUESS, RESTART_GAME, SET_AURAL} from './actions';
 
 const initialState = {
   guesses: [],
@@ -12,6 +12,7 @@ export default function reducer(state = initialState, action) {
     const difference = Math.abs(
       action.guess - state.correctAnswer
     );
+    
     let feedback;
     if (difference >= 50) {
       feedback = "You're Ice Cold...";
@@ -25,25 +26,45 @@ export default function reducer(state = initialState, action) {
       feedback = 'You got it!';
     }
 
+    const pluralize = state.guesses.length !== 0;
+
+    let auralStatus = `Here's the status of the game right now: ${
+      feedback
+    } You've made ${state.guesses.length +1} ${pluralize ? 'guesses' : 'guess'}.`;
+    
+    if (state.guesses.length > 0) {
+      auralStatus += ` ${
+        pluralize ? 'In order of most- to least-recent, they are' : 'It was'
+      }: ${action.guess}, ${state.guesses.reverse().join(', ')}`;
+    }
+
     return Object.assign({}, state, {
       guesses: [...state.guesses, action.guess],
-      feedback
+      feedback,
+      auralStatus
     });
-  }  else if (action.type === RESTART_GAME) {
-    return Object.assign({}, initialState, {
-      correctAnswer: Math.floor(Math.random() * 100) + 1
-    });
-  } else if (action.type === SET_AURAL) {
-    const pluralize = state.count !== 1;
+
+  } else if(action.type === SET_AURAL){
+    const pluralize = state.guesses.length !== 1;
+
     let auralStatus = `Here's the status of the game right now: ${
       state.feedback
-    } You've made ${state.count} ${pluralize ? 'guesses' : 'guess'}.`;
-    if (state.count > 0) {
+    } You've made ${state.guesses.length} ${pluralize ? 'guesses' : 'guess'}.`;
+    
+    if (state.guesses.length > 0) {
       auralStatus += ` ${
         pluralize ? 'In order of most- to least-recent, they are' : 'It was'
       }: ${state.guesses.reverse().join(', ')}`;
     }
-    return Object.assign({}, state, { auralStatus: auralStatus });
+
+    return Object.assign({}, state, {
+      auralStatus
+    });
+
+  } else if (action.type === RESTART_GAME) {
+    return Object.assign({}, initialState, {
+      correctAnswer: Math.floor(Math.random() * 100) + 1
+    });
   }
   return state;
 }
