@@ -27,12 +27,3 @@ export function setAural(){
   }
 }
 
-
-// TESTING REDUCER RESPONSE
-export const END_GAME = 'END_GAME';
-export function endGame(){
-  return {
-    type: END_GAME
-  }
-}
-
